@@ -1,8 +1,11 @@
 package com.learning.spring.controllers;
 
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,17 +38,21 @@ public class TransactionController {
 	}
 
 	@PostMapping("/addTransaction")
-	public String addNewTransaction(@ModelAttribute("transaction") Transaction transaction, Model model, HttpSession session) { 
-		transaction.setCategoryId((int) session.getAttribute("categoryId"));
-		transaction.setUserId((int) session.getAttribute("userId"));
-		if(transactionService.addTransaction(transaction)) {
-			model.addAttribute("message", "Transaction added successfully");
+	public String addNewTransaction(@Valid @ModelAttribute("transaction") Transaction transaction, BindingResult bindingResult , Model model, HttpSession session) { 
+		
+		if(bindingResult.hasErrors()) {
+			return "transaction";
 		} else {
-			model.addAttribute("message", "Failed to add transaction");
+			transaction.setCategoryId((int) session.getAttribute("categoryId"));
+			transaction.setUserId((int) session.getAttribute("userId"));
+			if(transactionService.addTransaction(transaction)) {
+				model.addAttribute("message", "Transaction added successfully");
+			} else {
+				model.addAttribute("message", "Failed to add transaction");
+			}
+			
+			return "transaction";
 		}
-		
-		return "transaction";
-		
 	}
 	
 	@GetMapping(value = "/viewTransactions/{categoryId}")

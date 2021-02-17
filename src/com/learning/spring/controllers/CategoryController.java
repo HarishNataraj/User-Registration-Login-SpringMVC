@@ -2,9 +2,11 @@ package com.learning.spring.controllers;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -36,14 +38,19 @@ public class CategoryController {
 	}
 	
 	@PostMapping("/addCategory")
-	public String addNewCategory(@ModelAttribute("category") Category category, HttpSession session, Model model) {
-		int user_id = (int) session.getAttribute("userId");
-		if(categoryService.addCategory(user_id, category.getCategoryName())) {
-			model.addAttribute("message", "Category added successfully");
+	public String addNewCategory(@Valid @ModelAttribute("category") Category category,BindingResult bindingResult, HttpSession session, Model model) {
+		
+		if(bindingResult.hasErrors()) {
+			return "redirect:/category/";
 		} else {
-			model.addAttribute("message", "Cannot add category");
+			int user_id = (int) session.getAttribute("userId");
+			if(categoryService.addCategory(user_id, category.getCategoryName())) {
+				model.addAttribute("message", "Category added successfully");
+			} else {
+				model.addAttribute("message", "Cannot add category");
+			}
+			return "redirect:/category/";
 		}
-		return "redirect:/category/";
 	}
 	
 	@GetMapping(value = "/deleteCategory/{categoryId}")

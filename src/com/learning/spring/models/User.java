@@ -1,12 +1,24 @@
 package com.learning.spring.models;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 public class User {
 	
 	private int userId;
+	
+	@NotEmpty(message = "Required")
 	private String firstName;
+	@NotEmpty(message = "Required")
 	private String lastName;
+	
+	@NotEmpty(message = "Required")
+	@Pattern(regexp = "^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$", message = "Invalid email format")
 	private String email;
+	
+	@NotEmpty(message = "Required")
+	@Size(min = 5, message = "Enter minimum 5 characters")
 	private String password;
 
 	public String getEmail() {

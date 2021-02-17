@@ -1,11 +1,21 @@
 package com.learning.spring.models;
 
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.NotBlank;
+
+
 public class Transaction {
 	
 	private int categoryId;
 	private int userId;
+	
+	@DecimalMin("0.1")
 	private double transactionAmount;
+	
+	@NotBlank(message = "Required")
 	private String transactionMode;
+	
+	@NotBlank(message = "Required")
 	private String transactionDate;
 	
 	public double getTransactionAmount() {

@@ -6,21 +6,20 @@
 <head>
 <meta charset="ISO-8859-1">
 <title>Insert title here</title>
+<style>  
+.error{color:red}  
+</style> 
 </head>
 <body>
 		<form:form action="register" modelAttribute="user">
 			<form:input path="firstName" placeholder="FirstName" />
-			<br>
-			<br>
+			<form:errors path="firstName" cssClass="error"/><br><br>  
 			<form:input path="lastName" placeholder="lastName" />
-			<br>
-			<br>
+			<form:errors path="lastName" cssClass="error"/><br><br> 
 			<form:input type="email" path="email" placeholder="Email" />
-			<br>
-			<br>
+			<form:errors path="email" cssClass="error"/><br><br> 
 			<form:input type="password" path="password" placeholder="Password" />
-			<br>
-			<br>
+			<form:errors path="password" cssClass="error"/><br><br> 
 			<input type="submit" value="Register" />
 		</form:form>
 		<p>${message}</p>

@@ -23,12 +23,14 @@ td, th {
 tr:nth-child(even) {
 	background-color: #dddddd;
 }
+.error{color:red}  
 </style>
 </head>
 <body>
 	<c:set var="contextPath" value="${pageContext.request.contextPath}" />
 	<form:form action="addCategory" method="post" modelAttribute="category">
 		<form:input path="categoryName" placeHolder="Category Name" />
+		<form:errors path="categoryName" cssClass="error"/><br><br> 
 		<input type="submit" value="Add Category" />
 	</form:form><br><br>
 	<table>
