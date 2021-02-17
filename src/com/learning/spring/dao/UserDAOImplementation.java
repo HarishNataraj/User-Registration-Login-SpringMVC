@@ -62,7 +62,7 @@ public class UserDAOImplementation implements UserDAO{
 	}
 
 	@Override
-	public boolean authenticateUser(String email, String password) {
+	public int authenticateUser(String email, String password) {
 		String query = "select * from users where (email=? AND password=?)";
 		Connection con = null;
 		PreparedStatement ps = null;
@@ -73,13 +73,14 @@ public class UserDAOImplementation implements UserDAO{
 			ps.setString(2, password);
 			ResultSet result = ps.executeQuery();
 			if(result.next()) {
-				return true;
+				int user_id = result.getInt("user_id");
+				return user_id;
 			} else {
-				return false;
+				return -1;
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-			return false;
+			return -1;
 		}
 	}
 

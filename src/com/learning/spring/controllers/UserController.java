@@ -7,11 +7,13 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import com.learning.spring.models.User;
 import com.learning.spring.services.UserService;
 
 @Controller
+@RequestMapping("/")
 public class UserController {
 
 	private User user;
@@ -48,8 +50,8 @@ public class UserController {
 	@GetMapping("/login")
 	public String getLoginPage(HttpSession session, Model model) {
 		if(session.getAttribute("user") != null) {
-			model.addAttribute("name", session.getAttribute("user"));
-			return "welcome";
+			model.addAttribute("name", session.getAttribute("userId"));
+			return "redirect:/category/";
 		}
 		return "login";
 	}
@@ -58,11 +60,11 @@ public class UserController {
 	public String loginUser(@RequestParam("email") String email, @RequestParam("password") String password,
 			Model model, HttpSession session) {
 		
-		boolean status = userService.authenticateUser(email, password);
-		if(status) {
-			session.setAttribute("user", email);
-			model.addAttribute("name", session.getAttribute("user"));
-			return "welcome";
+		int user_id = userService.authenticateUser(email, password);
+		if(user_id > 0) {
+			session.setAttribute("userId", user_id);
+			model.addAttribute("name", session.getAttribute("userId"));
+			return "redirect:/category/";
 		} else {
 			model.addAttribute("message", "Login failed");
 			return "login";

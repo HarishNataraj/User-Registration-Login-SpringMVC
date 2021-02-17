@@ -7,6 +7,6 @@ public interface UserDAO {
 	
 	public boolean saveUser(User user);
 	public boolean findUserByEmail(String email);
-	public boolean authenticateUser(String email, String password);
+	public int authenticateUser(String email, String password);
 	
 }

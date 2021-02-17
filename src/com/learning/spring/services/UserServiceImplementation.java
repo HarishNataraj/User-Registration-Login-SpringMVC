@@ -26,15 +26,16 @@ public class UserServiceImplementation implements UserService{
 
 
 	@Override
-	public boolean authenticateUser(String email, String password) {
+	public int authenticateUser(String email, String password) {
 		if (!userDao.findUserByEmail(email)) {
-			if (userDao.authenticateUser(email, password)) {
-				return true;
+			int user_id = userDao.authenticateUser(email, password);
+			if (user_id > 0) {
+				return user_id;
 			} else {
-				return false;
+				return -1;
 			}
 		} else {
-			return false;
+			return -1;
 		}
 	}
 
