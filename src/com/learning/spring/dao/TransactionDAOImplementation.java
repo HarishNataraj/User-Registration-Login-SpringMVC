@@ -62,6 +62,7 @@ public class TransactionDAOImplementation implements TransactionDAO{
 			TransactionDTO transactionDTO;
 			while(result.next()) {
 				transactionDTO = new TransactionDTO();
+				transactionDTO.setTransactionId(result.getInt("transaction_id"));
 				transactionDTO.setTransactionAmount(result.getDouble("amount"));
 				transactionDTO.setTransactionDate(result.getString("transaction_date"));
 				transactionDTO.setTransactionMode(result.getString("transaction_mode"));
@@ -71,30 +72,28 @@ public class TransactionDAOImplementation implements TransactionDAO{
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return null;
+		}	
+	}
+
+	@Override
+	public boolean deleteTransaction(int transactionId) {
+		String query = "delete from transactions where transaction_id=?";
+		Connection connection = null;
+		PreparedStatement preparedStatement = null;
+		try {
+			connection = dataSource.getConnection();
+			preparedStatement = connection.prepareStatement(query);
+			preparedStatement.setInt(1, transactionId);
+			int result = preparedStatement.executeUpdate();
+			if(result > 0) {
+				return true;
+			} else {
+				return false;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
 		}
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
 		
 	}
 }

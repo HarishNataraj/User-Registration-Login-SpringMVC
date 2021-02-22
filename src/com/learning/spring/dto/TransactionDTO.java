@@ -2,6 +2,7 @@ package com.learning.spring.dto;
 
 public class TransactionDTO {
 
+	private int transactionId;
 	private double transactionAmount;
 	private String transactionMode;
 	private String transactionDate;
@@ -29,6 +30,16 @@ public class TransactionDTO {
 	public void setTransactionDate(String transactionDate) {
 		this.transactionDate = transactionDate;
 	}
+
+	public int getTransactionId() {
+		return transactionId;
+	}
+
+	public void setTransactionId(int transactionId) {
+		this.transactionId = transactionId;
+	}
+	
+	
 	
 	
 	

@@ -1,7 +1,6 @@
 package com.learning.spring.services;
 
 import java.util.ArrayList;
-
 import com.learning.spring.dao.TransactionDAO;
 import com.learning.spring.dto.TransactionDTO;
 import com.learning.spring.models.Transaction;
@@ -42,6 +41,12 @@ public class TransactionServiceImplementation implements TransactionService{
 			expense += transactionDto.getTransactionAmount();
 		}
 		return expense;
+		
+	}
+
+	@Override
+	public boolean deleteTransaction(int transactionId) {
+		return transactiondao.deleteTransaction(transactionId);
 		
 	}
 	

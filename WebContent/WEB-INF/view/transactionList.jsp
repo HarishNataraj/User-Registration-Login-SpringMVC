@@ -37,6 +37,7 @@ tr:nth-child(even) {
 				<th>Transaction Amount</th>
 				<th>Transaction Date</th>
 				<th>Transaction Mode</th>
+				<th>Delete</th>
 			</tr>
 			<c:forEach var="transactionDto" items="${transactionList}"
 				varStatus="loop">
@@ -45,6 +46,8 @@ tr:nth-child(even) {
 					<td>${transactionDto.transactionAmount}</td>
 					<td>${transactionDto.transactionMode}</td>
 					<td>${transactionDto.transactionDate}</td>
+					<td><a
+						href="${contextPath}/transactions/deleteTransaction/${transactionDto.transactionId}">Delete</a></td>
 				</tr>
 			</c:forEach>
 		</table>
