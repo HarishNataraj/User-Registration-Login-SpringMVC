@@ -2,6 +2,8 @@ package com.learning.spring.controllers;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
