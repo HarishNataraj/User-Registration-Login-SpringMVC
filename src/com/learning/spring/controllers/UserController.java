@@ -1,9 +1,9 @@
 package com.learning.spring.controllers;
 
+import java.util.logging.Logger;
+
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-
-import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -18,6 +18,8 @@ import com.learning.spring.services.UserService;
 @Controller
 @RequestMapping("/")
 public class UserController {
+	
+	private static final Logger logger = Logger.getLogger(UserController.class.getName()); 
 
 	private User user;
 	private UserService userService;
@@ -38,25 +40,33 @@ public class UserController {
 
 	@PostMapping("/register")
 	public String registerUser(@Valid @ModelAttribute("user") User user, BindingResult bindingResult, Model model) {
-
-		if (bindingResult.hasErrors()) {
-			return "register";
-		} else {
-			boolean status = userService.saveUser(user);
-			if (status) {
-				model.addAttribute("message", "Registration successfull");
+		
+		try {
+			if (bindingResult.hasErrors()) {
+				return "register";
 			} else {
-				model.addAttribute("message", "Registration failed");
+				boolean status = userService.saveUser(user);
+				if (status) {
+					model.addAttribute("message", "Registration successfull");
+				} else {
+					model.addAttribute("message", "Registration failed");
+				}
 			}
-			return "login";
+		} catch (Exception e) {
+			logger.info(e.getMessage());
 		}
+		return "login";
 	}
 
 	@GetMapping("/login")
 	public String getLoginPage(HttpSession session, Model model) {
-		if (session.getAttribute("user") != null) {
-			model.addAttribute("name", session.getAttribute("userId"));
-			return "redirect:/category/";
+		try {
+			if (session.getAttribute("user") != null) {
+				model.addAttribute("name", session.getAttribute("userId"));
+				return "redirect:/category/";
+			}
+		} catch (Exception e) {
+			logger.info(e.getMessage());
 		}
 		return "login";
 	}
@@ -64,16 +74,21 @@ public class UserController {
 	@PostMapping("/login")
 	public String loginUser(@RequestParam("email") String email, @RequestParam("password") String password, Model model,
 			HttpSession session) {
-
-		int user_id = userService.authenticateUser(email, password);
-		if (user_id > 0) {
-			session.setAttribute("userId", user_id);
-			model.addAttribute("name", session.getAttribute("userId"));
-			return "redirect:/category/";
-		} else {
-			model.addAttribute("message", "Login failed");
-			return "login";
+		
+		try {
+			int user_id = userService.authenticateUser(email, password);
+			if (user_id > 0) {
+				session.setAttribute("userId", user_id);
+				model.addAttribute("name", session.getAttribute("userId"));
+				return "redirect:/category/";
+			} else {
+				model.addAttribute("message", "Login failed");
+			}
+		} catch (Exception e) {
+			logger.info(e.getMessage());
 		}
+		return "login";
+
 	}
 
 	@GetMapping("/logout")

@@ -1,5 +1,7 @@
 package com.learning.spring.controllers;
 
+import java.util.logging.Logger;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
@@ -22,6 +24,7 @@ import com.learning.spring.services.CategoryService;
 public class CategoryController {
 
 	private CategoryService categoryService;
+	private static final Logger logger = Logger.getLogger(CategoryController.class.getName()); 
 
 	public void setCategoryService(CategoryService categoryService) {
 		this.categoryService = categoryService;
@@ -29,11 +32,15 @@ public class CategoryController {
 
 	@GetMapping("/")
 	public String getCategoryPage(HttpSession session, Model model, HttpServletRequest request) {
-		if (session.getAttribute("userId") != null) {
-			int user_id = (int) session.getAttribute("userId");
-			model.addAttribute("category", new Category());
-			model.addAttribute("categoryList", categoryService.getAllCategories(user_id));
-			return "category";
+		try {
+			if (session.getAttribute("userId") != null) {
+				int user_id = (int) session.getAttribute("userId");
+				model.addAttribute("category", new Category());
+				model.addAttribute("categoryList", categoryService.getAllCategories(user_id));
+				return "category";
+			}
+		} catch (Exception e) {
+			logger.info(e.getMessage());
 		}
 		return "login";
 	}
@@ -41,29 +48,34 @@ public class CategoryController {
 	@PostMapping("/addCategory")
 	public String addNewCategory(@Valid @ModelAttribute("category") Category category, BindingResult bindingResult,
 			HttpSession session, RedirectAttributes redirectAttributes) {
-
-		if (bindingResult.hasErrors()) {
-			return "redirect:/category/";
-		} else {
-			int user_id = (int) session.getAttribute("userId");
-			if (categoryService.addCategory(user_id, category.getCategoryName())) {
-				redirectAttributes.addFlashAttribute("message", "Category added successfully");
+		try {
+			if (bindingResult.hasErrors()) {
+				return "redirect:/category/";
 			} else {
-				redirectAttributes.addFlashAttribute("message", "Cannot add the category");
+				int user_id = (int) session.getAttribute("userId");
+				if (categoryService.addCategory(user_id, category.getCategoryName())) {
+					redirectAttributes.addFlashAttribute("message", "Category added successfully");
+				} else {
+					redirectAttributes.addFlashAttribute("message", "Cannot add the category");
+				}
 			}
-			return "redirect:/category/";
+		} catch (Exception e) {
+			logger.info(e.getMessage());
 		}
+		return "redirect:/category/";
 	}
 
 	@GetMapping(value = "/deleteCategory/{categoryId}")
 	public String deleteCategory(@PathVariable("categoryId") int categoryId, RedirectAttributes redirectAttributes) {
-
-		if (categoryService.deleteCategory(categoryId)) {
-			redirectAttributes.addFlashAttribute("message", "Category deleted");
-		} else {
-			redirectAttributes.addFlashAttribute("message", "Failed to delete Category");
+		try {
+			if (categoryService.deleteCategory(categoryId)) {
+				redirectAttributes.addFlashAttribute("message", "Category deleted");
+			} else {
+				redirectAttributes.addFlashAttribute("message", "Failed to delete Category");
+			}
+		} catch (Exception e) {
+			logger.info(e.getMessage());
 		}
-
 		return "redirect:/category/";
 
 	}

@@ -1,5 +1,6 @@
 package com.learning.spring.services;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import com.learning.spring.dao.TransactionDAO;
 import com.learning.spring.dto.TransactionDTO;
@@ -14,7 +15,7 @@ public class TransactionServiceImplementation implements TransactionService{
 	}
 
 	@Override
-	public boolean addTransaction(Transaction transaction) {
+	public boolean addTransaction(Transaction transaction) throws SQLException {
 		
 		int userId = transaction.getUserId();
 		int categoryId = transaction.getCategoryId();
@@ -27,13 +28,13 @@ public class TransactionServiceImplementation implements TransactionService{
 	}
 
 	@Override
-	public ArrayList<TransactionDTO> getTransactions(int categoryId, int userId) {
+	public ArrayList<TransactionDTO> getTransactions(int categoryId, int userId) throws SQLException {
 		return transactiondao.getTransactions(categoryId,userId);
 		
 	}
 
 	@Override
-	public double calculateExpense(int categoryId, int userId) {
+	public double calculateExpense(int categoryId, int userId) throws SQLException {
 		double expense = 0;
 		
 		ArrayList<TransactionDTO> transactionDTOList = transactiondao.getTransactions(categoryId, userId);
@@ -45,7 +46,7 @@ public class TransactionServiceImplementation implements TransactionService{
 	}
 
 	@Override
-	public boolean deleteTransaction(int transactionId) {
+	public boolean deleteTransaction(int transactionId) throws SQLException {
 		return transactiondao.deleteTransaction(transactionId);
 		
 	}

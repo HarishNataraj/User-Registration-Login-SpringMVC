@@ -1,5 +1,6 @@
 package com.learning.spring.services;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import com.learning.spring.dao.CategoryDAO;
@@ -16,7 +17,7 @@ public class CategoryServiceImplementation implements CategoryService{
 
 
 	@Override
-	public boolean addCategory(int user_id, String categoryName) {
+	public boolean addCategory(int user_id, String categoryName) throws SQLException {
 		
 		if(!categoryDao.checkIfCategoryExists(user_id, categoryName)) {
 			if(categoryDao.addCategory(user_id, categoryName)) {
@@ -31,14 +32,14 @@ public class CategoryServiceImplementation implements CategoryService{
 	}
 
 	@Override
-	public ArrayList<CategoryDTO> getAllCategories(int user_id) {	
+	public ArrayList<CategoryDTO> getAllCategories(int user_id) throws SQLException {	
 		return categoryDao.getCategories(user_id);
 	}
 
 
 
 	@Override
-	public boolean deleteCategory(int categoryId) {
+	public boolean deleteCategory(int categoryId) throws SQLException {
 		return categoryDao.deleteCategory(categoryId);
 		
 	}

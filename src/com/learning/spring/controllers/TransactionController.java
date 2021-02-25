@@ -1,5 +1,8 @@
 package com.learning.spring.controllers;
 
+import java.sql.SQLException;
+import java.util.logging.Logger;
+
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
@@ -19,6 +22,7 @@ import com.learning.spring.services.TransactionService;
 @Controller
 @RequestMapping("/transactions")
 public class TransactionController {
+	private static final Logger logger = Logger.getLogger(TransactionController.class.getName()); 
 
 	private TransactionService transactionService;
 
@@ -28,13 +32,16 @@ public class TransactionController {
 
 	@GetMapping(value = "/{categoryId}")
 	public String getTransactionForm(@PathVariable("categoryId") int id, Model model, HttpSession session) {
-		if (session.getAttribute("userId") != null) {
-			session.setAttribute("categoryId", id);
-			Transaction transaction = new Transaction();
-			model.addAttribute("transaction", transaction);
-			return "transaction";
+		try {
+			if (session.getAttribute("userId") != null) {
+				session.setAttribute("categoryId", id);
+				Transaction transaction = new Transaction();
+				model.addAttribute("transaction", transaction);
+				return "transaction";
+			}
+		} catch (Exception e) {
+			logger.info(e.getMessage());
 		}
-
 		return "login";
 
 	}
@@ -42,29 +49,35 @@ public class TransactionController {
 	@PostMapping("/addTransaction")
 	public String addNewTransaction(@Valid @ModelAttribute("transaction") Transaction transaction,
 			BindingResult bindingResult, Model model, HttpSession session) {
-
-		if (bindingResult.hasErrors()) {
-			return "transaction";
-		} else {
-			transaction.setCategoryId((int) session.getAttribute("categoryId"));
-			transaction.setUserId((int) session.getAttribute("userId"));
-			if (transactionService.addTransaction(transaction)) {
-				model.addAttribute("message", "Transaction added successfully");
+		try {
+			if (bindingResult.hasErrors()) {
+				return "transaction";
 			} else {
-				model.addAttribute("message", "Failed to add transaction");
-			}
+				transaction.setCategoryId((int) session.getAttribute("categoryId"));
+				transaction.setUserId((int) session.getAttribute("userId"));
+				if (transactionService.addTransaction(transaction)) {
+					model.addAttribute("message", "Transaction added successfully");
+				} else {
+					model.addAttribute("message", "Failed to add transaction");
+				}
 
-			return "transaction";
+			}
+		} catch (Exception e) {
+			logger.info(e.getMessage());
 		}
+		return "transaction";
 	}
 
 	@GetMapping(value = "/viewTransactions/{categoryId}")
 	public String getTransactions(@PathVariable("categoryId") int categoryId, HttpSession session, Model model) {
-
-		model.addAttribute("transactionList",
-				transactionService.getTransactions(categoryId, (int) session.getAttribute("userId")));
-		model.addAttribute("expense",
-				transactionService.calculateExpense(categoryId, (int) session.getAttribute("userId")));
+		try {
+			model.addAttribute("transactionList",
+					transactionService.getTransactions(categoryId, (int) session.getAttribute("userId")));
+			model.addAttribute("expense",
+					transactionService.calculateExpense(categoryId, (int) session.getAttribute("userId")));
+		} catch (Exception e) {
+			logger.info(e.getMessage());
+		}
 		return "transactionList";
 	}
 
@@ -72,10 +85,14 @@ public class TransactionController {
 	public String deleteTransaction(@PathVariable("transactionId") int transactionId, HttpSession session,
 			RedirectAttributes redirectAttributes) {
 		int categoryId = (int) session.getAttribute("categoryId");
-		if (transactionService.deleteTransaction(transactionId)) {
-			redirectAttributes.addFlashAttribute("message", "Transaction deleted successfully");
-		} else {
-			redirectAttributes.addFlashAttribute("message", "Transaction delete failed");
+		try {
+			if (transactionService.deleteTransaction(transactionId)) {
+				redirectAttributes.addFlashAttribute("message", "Transaction deleted successfully");
+			} else {
+				redirectAttributes.addFlashAttribute("message", "Transaction delete failed");
+			}
+		} catch (SQLException e) {
+			logger.info(e.getMessage());
 		}
 		return "redirect:/transactions/viewTransactions/" + categoryId;
 	}

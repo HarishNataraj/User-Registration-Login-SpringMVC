@@ -20,7 +20,7 @@ public class TransactionDAOImplementation implements TransactionDAO{
 
 	@Override
 	public boolean addTransaction(int categoryId, int userId, double transactionAmount, String transactionMode,
-			String transactionDate) {
+			String transactionDate) throws SQLException {
 
 		String query = "insert into transactions (category_id,user_id,amount,transaction_mode,transaction_date) values(?,?,?,?,?)";
 		Connection connection = null;
@@ -40,15 +40,14 @@ public class TransactionDAOImplementation implements TransactionDAO{
 				return false;
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
+			throw(e);
 		}
 		
 		
 	}
 
 	@Override
-	public ArrayList<TransactionDTO> getTransactions(int categoryId, int userId) {
+	public ArrayList<TransactionDTO> getTransactions(int categoryId, int userId) throws SQLException {
 		String query = "select * from transactions where category_id=? AND user_id=?";
 		Connection connection = null;
 		PreparedStatement preparedStatement = null;
@@ -70,13 +69,12 @@ public class TransactionDAOImplementation implements TransactionDAO{
 			}
 			return transactionDTOList;
 		} catch (SQLException e) {
-			e.printStackTrace();
-			return null;
+			throw(e);
 		}	
 	}
 
 	@Override
-	public boolean deleteTransaction(int transactionId) {
+	public boolean deleteTransaction(int transactionId) throws SQLException {
 		String query = "delete from transactions where transaction_id=?";
 		Connection connection = null;
 		PreparedStatement preparedStatement = null;
@@ -91,8 +89,7 @@ public class TransactionDAOImplementation implements TransactionDAO{
 				return false;
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
+			throw(e);
 		}
 		
 	}

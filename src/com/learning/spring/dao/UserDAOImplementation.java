@@ -17,7 +17,7 @@ public class UserDAOImplementation implements UserDAO{
 	}
 
 	@Override
-	public boolean saveUser(User user) {
+	public boolean saveUser(User user) throws SQLException {
 		String query = "insert into users (first_Name,last_Name,email,password) values(?,?,?,?)";
 		Connection con = null;
 		PreparedStatement ps = null;
@@ -35,13 +35,12 @@ public class UserDAOImplementation implements UserDAO{
 				return false;
 			}
 			} catch (SQLException e) {
-				e.printStackTrace();
-				return false;
+				throw(e);
 			}
 	}
 
 	@Override
-	public boolean findUserByEmail(String email) {
+	public boolean findUserByEmail(String email) throws SQLException {
 		String query = "select * from users where email=?";
 		Connection con = null;
 		PreparedStatement ps = null;
@@ -56,13 +55,12 @@ public class UserDAOImplementation implements UserDAO{
 				return true;
 			}
 			} catch (SQLException e) {
-				e.printStackTrace();
-				return false;
+				throw(e);
 			}
 	}
 
 	@Override
-	public int authenticateUser(String email, String password) {
+	public int authenticateUser(String email, String password) throws SQLException {
 		String query = "select * from users where (email=? AND password=?)";
 		Connection con = null;
 		PreparedStatement ps = null;
@@ -79,8 +77,7 @@ public class UserDAOImplementation implements UserDAO{
 				return -1;
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
-			return -1;
+			throw(e);
 		}
 	}
 

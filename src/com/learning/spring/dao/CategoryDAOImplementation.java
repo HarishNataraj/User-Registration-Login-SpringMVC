@@ -19,7 +19,7 @@ public class CategoryDAOImplementation implements CategoryDAO{
 	}
 
 	@Override
-	public boolean checkIfCategoryExists(int user_id, String categoryName) {
+	public boolean checkIfCategoryExists(int user_id, String categoryName) throws SQLException {
 		String query = "Select * from categories where user_id=? AND title=?";
 		Connection connection = null;
 		PreparedStatement preparedStatement = null;
@@ -35,13 +35,12 @@ public class CategoryDAOImplementation implements CategoryDAO{
 				return false;
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
+			throw(e);
 		}
 	}
 
 	@Override
-	public boolean addCategory(int user_id, String categoryName) {
+	public boolean addCategory(int user_id, String categoryName) throws SQLException {
 		String query = "insert into categories (user_id,title) values(?,?)";
 		Connection connection = null;
 		PreparedStatement preparedStatement = null;
@@ -57,14 +56,13 @@ public class CategoryDAOImplementation implements CategoryDAO{
 				return false;
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
+			throw(e);
 		}
 		
 	}
 
 	@Override
-	public ArrayList<CategoryDTO> getCategories(int user_id) {
+	public ArrayList<CategoryDTO> getCategories(int user_id) throws SQLException {
 		String query = "Select * from categories where user_id=?";
 		Connection connection = null;
 		PreparedStatement preparedStatement = null;
@@ -83,13 +81,12 @@ public class CategoryDAOImplementation implements CategoryDAO{
 			}
 			return categoryDTOList;
 		} catch (SQLException e) {
-			e.printStackTrace();
-			return categoryDTOList;
+			throw(e);
 		}
 	}
 
 	@Override
-	public boolean deleteCategory(int categoryId) {
+	public boolean deleteCategory(int categoryId) throws SQLException {
 		String query = "delete from categories where category_id=?";
 		Connection connection = null;
 		PreparedStatement preparedStatement = null;
@@ -104,8 +101,7 @@ public class CategoryDAOImplementation implements CategoryDAO{
 				return false;
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
+			throw(e);
 		}
 		
 	}
