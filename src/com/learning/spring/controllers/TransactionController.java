@@ -1,6 +1,11 @@
 package com.learning.spring.controllers;
 
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpSession;
@@ -31,7 +36,7 @@ public class TransactionController {
 	}
 
 	@GetMapping(value = "/{categoryId}")
-	public String getTransactionForm(@PathVariable("categoryId") int id, Model model, HttpSession session) {
+	public String getTransactionForm(@PathVariable("categoryId") String id, Model model, HttpSession session) {
 		try {
 			if (session.getAttribute("userId") != null) {
 				session.setAttribute("categoryId", id);
@@ -53,8 +58,9 @@ public class TransactionController {
 			if (bindingResult.hasErrors()) {
 				return "transaction";
 			} else {
-				transaction.setCategoryId((int) session.getAttribute("categoryId"));
-				transaction.setUserId((int) session.getAttribute("userId"));
+				transaction.setCategoryId((String) session.getAttribute("categoryId"));
+				transaction.setUserId((String) session.getAttribute("userId"));
+				transaction.setTransactionId(getHash(transaction.getUserId()+""+transaction.getCategoryId()+""+transaction.getTransactionDate()));
 				if (transactionService.addTransaction(transaction)) {
 					model.addAttribute("message", "Transaction added successfully");
 				} else {
@@ -69,12 +75,12 @@ public class TransactionController {
 	}
 
 	@GetMapping(value = "/viewTransactions/{categoryId}")
-	public String getTransactions(@PathVariable("categoryId") int categoryId, HttpSession session, Model model) {
+	public String getTransactions(@PathVariable("categoryId") String categoryId, HttpSession session, Model model) {
 		try {
 			model.addAttribute("transactionList",
-					transactionService.getTransactions(categoryId, (int) session.getAttribute("userId")));
+					transactionService.getTransactions(categoryId, (String) session.getAttribute("userId")));
 			model.addAttribute("expense",
-					transactionService.calculateExpense(categoryId, (int) session.getAttribute("userId")));
+					transactionService.calculateExpense(categoryId, (String) session.getAttribute("userId")));
 		} catch (Exception e) {
 			logger.info(e.getMessage());
 		}
@@ -82,9 +88,9 @@ public class TransactionController {
 	}
 
 	@GetMapping(value = "/deleteTransaction/{transactionId}")
-	public String deleteTransaction(@PathVariable("transactionId") int transactionId, HttpSession session,
+	public String deleteTransaction(@PathVariable("transactionId") String transactionId, HttpSession session,
 			RedirectAttributes redirectAttributes) {
-		int categoryId = (int) session.getAttribute("categoryId");
+		String categoryId = (String) session.getAttribute("categoryId");
 		try {
 			if (transactionService.deleteTransaction(transactionId)) {
 				redirectAttributes.addFlashAttribute("message", "Transaction deleted successfully");
@@ -95,6 +101,14 @@ public class TransactionController {
 			logger.info(e.getMessage());
 		}
 		return "redirect:/transactions/viewTransactions/" + categoryId;
+	}
+	
+	private String getHash(String transactionId) throws NoSuchAlgorithmException {
+		MessageDigest md = MessageDigest.getInstance("SHA-1");
+		byte[] messageDigest = md.digest(transactionId.getBytes()); 
+		BigInteger no = new BigInteger(1, messageDigest);
+		String hashtext = no.toString(16);
+		return hashtext;
 	}
 
 }

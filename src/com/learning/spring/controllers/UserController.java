@@ -1,5 +1,8 @@
 package com.learning.spring.controllers;
 
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpSession;
@@ -45,6 +48,7 @@ public class UserController {
 			if (bindingResult.hasErrors()) {
 				return "register";
 			} else {
+				user.setUserId(getHash(user.getEmail()));
 				boolean status = userService.saveUser(user);
 				if (status) {
 					model.addAttribute("message", "Registration successfull");
@@ -55,7 +59,15 @@ public class UserController {
 		} catch (Exception e) {
 			logger.info(e.getMessage());
 		}
-		return "login";
+		return "register";
+	}
+
+	private String getHash(String email) throws NoSuchAlgorithmException {
+		MessageDigest md = MessageDigest.getInstance("SHA-1");
+		byte[] messageDigest = md.digest(email.getBytes()); 
+		BigInteger no = new BigInteger(1, messageDigest);
+		String hashtext = no.toString(16);
+		return hashtext;
 	}
 
 	@GetMapping("/login")
@@ -76,8 +88,8 @@ public class UserController {
 			HttpSession session) {
 		
 		try {
-			int user_id = userService.authenticateUser(email, password);
-			if (user_id > 0) {
+			String user_id = userService.authenticateUser(email, password);
+			if (user_id != null) {
 				session.setAttribute("userId", user_id);
 				model.addAttribute("name", session.getAttribute("userId"));
 				return "redirect:/category/";

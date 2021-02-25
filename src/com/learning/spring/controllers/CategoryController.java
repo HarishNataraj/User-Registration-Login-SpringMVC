@@ -1,5 +1,8 @@
 package com.learning.spring.controllers;
 
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
@@ -34,7 +37,7 @@ public class CategoryController {
 	public String getCategoryPage(HttpSession session, Model model, HttpServletRequest request) {
 		try {
 			if (session.getAttribute("userId") != null) {
-				int user_id = (int) session.getAttribute("userId");
+				String user_id = (String) session.getAttribute("userId");
 				model.addAttribute("category", new Category());
 				model.addAttribute("categoryList", categoryService.getAllCategories(user_id));
 				return "category";
@@ -52,8 +55,9 @@ public class CategoryController {
 			if (bindingResult.hasErrors()) {
 				return "redirect:/category/";
 			} else {
-				int user_id = (int) session.getAttribute("userId");
-				if (categoryService.addCategory(user_id, category.getCategoryName())) {
+				String user_id = (String) session.getAttribute("userId");
+				category.setCategory_id(getHash(user_id+""+category.getCategoryName()));
+				if (categoryService.addCategory(user_id, category)) {
 					redirectAttributes.addFlashAttribute("message", "Category added successfully");
 				} else {
 					redirectAttributes.addFlashAttribute("message", "Cannot add the category");
@@ -66,7 +70,7 @@ public class CategoryController {
 	}
 
 	@GetMapping(value = "/deleteCategory/{categoryId}")
-	public String deleteCategory(@PathVariable("categoryId") int categoryId, RedirectAttributes redirectAttributes) {
+	public String deleteCategory(@PathVariable("categoryId") String categoryId, RedirectAttributes redirectAttributes) {
 		try {
 			if (categoryService.deleteCategory(categoryId)) {
 				redirectAttributes.addFlashAttribute("message", "Category deleted");
@@ -78,6 +82,14 @@ public class CategoryController {
 		}
 		return "redirect:/category/";
 
+	}
+	
+	private String getHash(String categoryId) throws NoSuchAlgorithmException {
+		MessageDigest md = MessageDigest.getInstance("SHA-1");
+		byte[] messageDigest = md.digest(categoryId.getBytes()); 
+		BigInteger no = new BigInteger(1, messageDigest);
+		String hashtext = no.toString(16);
+		return hashtext;
 	}
 
 }

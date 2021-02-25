@@ -6,8 +6,9 @@ import javax.validation.constraints.NotBlank;
 
 public class Transaction {
 	
-	private int categoryId;
-	private int userId;
+	private String transactionId;
+	private String categoryId;
+	private String userId;
 	
 	@DecimalMin("0.1")
 	private double transactionAmount;
@@ -42,21 +43,31 @@ public class Transaction {
 		this.transactionDate = transactionDate;
 	}
 
-	public int getCategoryId() {
+	public String getCategoryId() {
 		return categoryId;
 	}
 
-	public void setCategoryId(int categoryId) {
+	public void setCategoryId(String categoryId) {
 		this.categoryId = categoryId;
 	}
 
-	public int getUserId() {
+	public String getUserId() {
 		return userId;
 	}
 
-	public void setUserId(int userId) {
+	public void setUserId(String userId) {
 		this.userId = userId;
 	}
+
+	public String getTransactionId() {
+		return transactionId;
+	}
+
+	public void setTransactionId(String transactionId) {
+		this.transactionId = transactionId;
+	}
+	
+	
 	
 	
 	

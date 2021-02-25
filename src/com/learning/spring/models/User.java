@@ -6,7 +6,7 @@ import javax.validation.constraints.Size;
 
 public class User {
 	
-	private int userId;
+	private String userId;
 	
 	@NotEmpty(message = "Required")
 	private String firstName;
@@ -27,10 +27,10 @@ public class User {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	public int getUserId() {
+	public String getUserId() {
 		return userId;
 	}
-	public void setUserId(int userId) {
+	public void setUserId(String userId) {
 		this.userId = userId;
 	}
 	public String getFirstName() {

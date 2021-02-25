@@ -9,10 +9,10 @@ public interface TransactionService {
 
 	boolean addTransaction(Transaction transaction) throws SQLException;
 
-	ArrayList<TransactionDTO> getTransactions(int categoryId, int userId) throws SQLException;
+	ArrayList<TransactionDTO> getTransactions(String categoryId, String userId) throws SQLException;
 
-	double calculateExpense(int categoryId, int attribute) throws SQLException;
+	double calculateExpense(String categoryId, String attribute) throws SQLException;
 
-	boolean deleteTransaction(int transactionId) throws SQLException;
+	boolean deleteTransaction(String transactionId) throws SQLException;
 
 }

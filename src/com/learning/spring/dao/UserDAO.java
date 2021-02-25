@@ -9,6 +9,6 @@ public interface UserDAO {
 	
 	public boolean saveUser(User user) throws SQLException;
 	public boolean findUserByEmail(String email) throws SQLException;
-	public int authenticateUser(String email, String password) throws SQLException;
+	public String authenticateUser(String email, String password) throws SQLException;
 	
 }

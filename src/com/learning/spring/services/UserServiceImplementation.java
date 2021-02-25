@@ -28,16 +28,16 @@ public class UserServiceImplementation implements UserService{
 
 
 	@Override
-	public int authenticateUser(String email, String password) throws SQLException {
+	public String authenticateUser(String email, String password) throws SQLException {
 		if (!userDao.findUserByEmail(email)) {
-			int user_id = userDao.authenticateUser(email, password);
-			if (user_id > 0) {
+			String user_id = userDao.authenticateUser(email, password);
+			if (user_id != null) {
 				return user_id;
 			} else {
-				return -1;
+				return null;
 			}
 		} else {
-			return -1;
+			return null;
 		}
 	}
 

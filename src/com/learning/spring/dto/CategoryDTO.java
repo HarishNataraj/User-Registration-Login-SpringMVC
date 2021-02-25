@@ -2,14 +2,14 @@ package com.learning.spring.dto;
 
 public class CategoryDTO {
 	
-	private int category_id;
+	private String category_id;
 	private String category_name;
 	
-	public int getCategory_id() {
+	public String getCategory_id() {
 		return category_id;
 	}
 	
-	public void setCategory_id(int category_id) {
+	public void setCategory_id(String category_id) {
 		this.category_id = category_id;
 	}
 	

@@ -17,24 +17,25 @@ public class TransactionServiceImplementation implements TransactionService{
 	@Override
 	public boolean addTransaction(Transaction transaction) throws SQLException {
 		
-		int userId = transaction.getUserId();
-		int categoryId = transaction.getCategoryId();
+		String transactionId = transaction.getTransactionId();
+		String userId = transaction.getUserId();
+		String categoryId = transaction.getCategoryId();
 		double transactionAmount = transaction.getTransactionAmount();
 		String transactionMode = transaction.getTransactionMode();
 		String transactionDate = transaction.getTransactionDate();
 		
-		return transactiondao.addTransaction(categoryId, userId, transactionAmount, transactionMode, transactionDate );
+		return transactiondao.addTransaction(transactionId, categoryId, userId, transactionAmount, transactionMode, transactionDate );
 		
 	}
 
 	@Override
-	public ArrayList<TransactionDTO> getTransactions(int categoryId, int userId) throws SQLException {
+	public ArrayList<TransactionDTO> getTransactions(String categoryId, String userId) throws SQLException {
 		return transactiondao.getTransactions(categoryId,userId);
 		
 	}
 
 	@Override
-	public double calculateExpense(int categoryId, int userId) throws SQLException {
+	public double calculateExpense(String categoryId, String userId) throws SQLException {
 		double expense = 0;
 		
 		ArrayList<TransactionDTO> transactionDTOList = transactiondao.getTransactions(categoryId, userId);
@@ -46,7 +47,7 @@ public class TransactionServiceImplementation implements TransactionService{
 	}
 
 	@Override
-	public boolean deleteTransaction(int transactionId) throws SQLException {
+	public boolean deleteTransaction(String transactionId) throws SQLException {
 		return transactiondao.deleteTransaction(transactionId);
 		
 	}

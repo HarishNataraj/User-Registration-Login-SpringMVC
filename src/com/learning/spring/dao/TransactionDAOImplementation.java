@@ -19,20 +19,21 @@ public class TransactionDAOImplementation implements TransactionDAO{
 	}
 
 	@Override
-	public boolean addTransaction(int categoryId, int userId, double transactionAmount, String transactionMode,
+	public boolean addTransaction(String transactionId, String categoryId, String userId, double transactionAmount, String transactionMode,
 			String transactionDate) throws SQLException {
 
-		String query = "insert into transactions (category_id,user_id,amount,transaction_mode,transaction_date) values(?,?,?,?,?)";
+		String query = "insert into transactions (transaction_id,category_id,user_id,amount,transaction_mode,transaction_date) values(?,?,?,?,?,?)";
 		Connection connection = null;
 		PreparedStatement preparedStatement = null;
 		try {
 			connection = dataSource.getConnection();
 			preparedStatement = connection.prepareStatement(query);
-			preparedStatement.setInt(1, categoryId);
-			preparedStatement.setInt(2, userId);
-			preparedStatement.setDouble(3, transactionAmount);
-			preparedStatement.setString(4, transactionMode);
-			preparedStatement.setString(5, transactionDate);
+			preparedStatement.setString(1, transactionId);
+			preparedStatement.setString(2, categoryId);
+			preparedStatement.setString(3, userId);
+			preparedStatement.setDouble(4, transactionAmount);
+			preparedStatement.setString(5, transactionMode);
+			preparedStatement.setString(6, transactionDate);
 			int result = preparedStatement.executeUpdate();
 			if(result == 1) {
 				return true;
@@ -47,21 +48,21 @@ public class TransactionDAOImplementation implements TransactionDAO{
 	}
 
 	@Override
-	public ArrayList<TransactionDTO> getTransactions(int categoryId, int userId) throws SQLException {
+	public ArrayList<TransactionDTO> getTransactions(String categoryId, String userId) throws SQLException {
 		String query = "select * from transactions where category_id=? AND user_id=?";
 		Connection connection = null;
 		PreparedStatement preparedStatement = null;
 		try {
 			connection = dataSource.getConnection();
 			preparedStatement = connection.prepareStatement(query);
-			preparedStatement.setInt(1, categoryId);
-			preparedStatement.setInt(2, userId);
+			preparedStatement.setString(1, categoryId);
+			preparedStatement.setString(2, userId);
 			ResultSet result = preparedStatement.executeQuery();
 			ArrayList<TransactionDTO> transactionDTOList = new ArrayList<>();
 			TransactionDTO transactionDTO;
 			while(result.next()) {
 				transactionDTO = new TransactionDTO();
-				transactionDTO.setTransactionId(result.getInt("transaction_id"));
+				transactionDTO.setTransactionId(result.getString("transaction_id"));
 				transactionDTO.setTransactionAmount(result.getDouble("amount"));
 				transactionDTO.setTransactionDate(result.getString("transaction_date"));
 				transactionDTO.setTransactionMode(result.getString("transaction_mode"));
@@ -74,14 +75,14 @@ public class TransactionDAOImplementation implements TransactionDAO{
 	}
 
 	@Override
-	public boolean deleteTransaction(int transactionId) throws SQLException {
+	public boolean deleteTransaction(String transactionId) throws SQLException {
 		String query = "delete from transactions where transaction_id=?";
 		Connection connection = null;
 		PreparedStatement preparedStatement = null;
 		try {
 			connection = dataSource.getConnection();
 			preparedStatement = connection.prepareStatement(query);
-			preparedStatement.setInt(1, transactionId);
+			preparedStatement.setString(1, transactionId);
 			int result = preparedStatement.executeUpdate();
 			if(result > 0) {
 				return true;

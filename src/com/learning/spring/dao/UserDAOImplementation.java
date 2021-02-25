@@ -18,16 +18,17 @@ public class UserDAOImplementation implements UserDAO{
 
 	@Override
 	public boolean saveUser(User user) throws SQLException {
-		String query = "insert into users (first_Name,last_Name,email,password) values(?,?,?,?)";
+		String query = "insert into users (user_id,first_Name,last_Name,email,password) values(?,?,?,?,?)";
 		Connection con = null;
 		PreparedStatement ps = null;
 		try {
 			con = dataSource.getConnection();
 			ps = con.prepareStatement(query);
-			ps.setString(1, user.getFirstName());
-			ps.setString(2, user.getLastName());
-			ps.setString(3, user.getEmail());
-			ps.setString(4, user.getPassword());
+			ps.setString(1, user.getUserId());
+			ps.setString(2, user.getFirstName());
+			ps.setString(3, user.getLastName());
+			ps.setString(4, user.getEmail());
+			ps.setString(5, user.getPassword());
 			int result = ps.executeUpdate();
 			if(result != 0) {
 				return true;
@@ -60,7 +61,7 @@ public class UserDAOImplementation implements UserDAO{
 	}
 
 	@Override
-	public int authenticateUser(String email, String password) throws SQLException {
+	public String authenticateUser(String email, String password) throws SQLException {
 		String query = "select * from users where (email=? AND password=?)";
 		Connection con = null;
 		PreparedStatement ps = null;
@@ -71,10 +72,10 @@ public class UserDAOImplementation implements UserDAO{
 			ps.setString(2, password);
 			ResultSet result = ps.executeQuery();
 			if(result.next()) {
-				int user_id = result.getInt("user_id");
+				String user_id = result.getString("user_id");
 				return user_id;
 			} else {
-				return -1;
+				return null;
 			}
 		} catch (SQLException e) {
 			throw(e);
