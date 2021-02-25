@@ -4,6 +4,7 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.Logger;
@@ -58,6 +59,11 @@ public class TransactionController {
 			if (bindingResult.hasErrors()) {
 				return "transaction";
 			} else {
+				String myDate = transaction.getTransactionDate();
+				DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm");
+				Date date = formatter.parse(myDate);
+				long millis = date.getTime();
+				transaction.setTransactionDate(String.valueOf(millis));
 				transaction.setCategoryId((String) session.getAttribute("categoryId"));
 				transaction.setUserId((String) session.getAttribute("userId"));
 				transaction.setTransactionId(getHash(transaction.getUserId()+""+transaction.getCategoryId()+""+transaction.getTransactionDate()));

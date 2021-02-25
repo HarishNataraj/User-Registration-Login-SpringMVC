@@ -21,7 +21,7 @@
 		<form:errors path="transactionAmount" cssClass="error" />
 		<br>
 		<br>
-		<form:input type="date" path="transactionDate" id="transactionDate" />
+		<form:input type="datetime-local" step="1" path="transactionDate" id="transactionDate" />
 		<form:errors path="transactionDate" cssClass="error" />
 		<br>
 		<br> 

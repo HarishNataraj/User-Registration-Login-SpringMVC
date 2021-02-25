@@ -4,7 +4,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import javax.sql.DataSource;
 
@@ -59,12 +62,17 @@ public class TransactionDAOImplementation implements TransactionDAO{
 			preparedStatement.setString(2, userId);
 			ResultSet result = preparedStatement.executeQuery();
 			ArrayList<TransactionDTO> transactionDTOList = new ArrayList<>();
+			DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 			TransactionDTO transactionDTO;
+			Calendar calendar;
 			while(result.next()) {
 				transactionDTO = new TransactionDTO();
 				transactionDTO.setTransactionId(result.getString("transaction_id"));
 				transactionDTO.setTransactionAmount(result.getDouble("amount"));
-				transactionDTO.setTransactionDate(result.getString("transaction_date"));
+				long milliSeconds= Long.parseLong(result.getString("transaction_date"));
+				calendar = Calendar.getInstance();
+				calendar.setTimeInMillis(milliSeconds);
+				transactionDTO.setTransactionDate(formatter.format(calendar.getTime()));
 				transactionDTO.setTransactionMode(result.getString("transaction_mode"));
 				transactionDTOList.add(transactionDTO);
 			}
